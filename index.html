@@ -852,9 +852,9 @@
             </div>
         </div>
     </div>
-    
+
     <script>
-        // Dados dos reis e suas cartas baseados no CSV
+        // Dados dos reis e suas cartas com imagens locais
         const kingsData = [
             {
                 id: 1,
@@ -862,15 +862,15 @@
                 color: "var(--king-nothing)",
                 icon: "👑",
                 cards: [
-                    { name: "Castelo", type: "base", description: "Arremessa um projétil de pedra nos inimigos.", image: "https://static.wikia.nocookie.net/9kings/images/1/19/Castle_-_King_of_Nothing.png/revision/latest?cb=20250526165724" },
-                    { name: "Soldado", type: "tropa", description: "Tropa corpo a corpo equilibrada.", image: "https://static.wikia.nocookie.net/9kings/images/9/97/Soldier_-_King_of_Nothing.png/revision/latest?cb=20250526170533" },
-                    { name: "Paladino", type: "tropa", description: "Tropa corpo a corpo com alta defesa.", image: "https://static.wikia.nocookie.net/9kings/images/e/ea/Paladin_-_King_of_Nothing.png/revision/latest?cb=20250526173520" },
-                    { name: "Arqueiro", type: "tropa", description: "Provoca dano fraco e rápido à distância.", image: "https://static.wikia.nocookie.net/9kings/images/8/86/Archer_-_King_of_Nothing.png/revision/latest?cb=20250526173905" },
-                    { name: "Torre de guarda", type: "torre", description: "Atira poderosas flechas de alvo único.", image: "https://static.wikia.nocookie.net/9kings/images/9/9c/Scout_Tower_-_King_of_Nothing.png/revision/latest?cb=20250526173959" },
-                    { name: "Fazenda", type: "edificio", description: "Todo ano, adiciona +1 unidade a uma tropa adjacente.", image: "https://static.wikia.nocookie.net/9kings/images/c/cf/Farm_-_King_of_Nothing.png/revision/latest?cb=20250526174123" },
-                    { name: "Coringa", type: "tome", description: "Aumenta 1 nível do terreno alvo.", image: "https://static.wikia.nocookie.net/9kings/images/d/db/Wildcard_-_King_of_Nothing.png/revision/latest?cb=20250526174217" },
-                    { name: "Ferreiro", type: "edificio", description: "Todo ano, adiciona +2% dano de ataque às tropas e construções adjacentes.", image: "https://static.wikia.nocookie.net/9kings/images/4/47/Blacksmith_-_King_of_Nothing.png/revision/latest?cb=20250526174258" },
-                    { name: "Capa de Aço", type: "encantamento", description: "Cancela o primeiro dano que a unidade alvo receberia a cada batalha.", image: "https://static.wikia.nocookie.net/9kings/images/7/74/Steel_Coat_-_King_of_Nothing.png/revision/latest?cb=20250526174342" }
+                    { name: "Castelo", type: "base", description: "Arremessa um projétil de pedra nos inimigos.", image: "images/rei-do-nada_castelo.png" },
+                    { name: "Soldado", type: "tropa", description: "Tropa corpo a corpo equilibrada.", image: "images/rei-do-nada_soldado.png" },
+                    { name: "Paladino", type: "tropa", description: "Tropa corpo a corpo com alta defesa.", image: "images/rei-do-nada_paladino.png" },
+                    { name: "Arqueiro", type: "tropa", description: "Provoca dano fraco e rápido à distância.", image: "images/rei-do-nada_arqueiro.png" },
+                    { name: "Torre de guarda", type: "torre", description: "Atira poderosas flechas de alvo único.", image: "images/rei-do-nada_torre-de-guarda.png" },
+                    { name: "Fazenda", type: "edificio", description: "Todo ano, adiciona +1 unidade a uma tropa adjacente.", image: "images/rei-do-nada_fazenda.png" },
+                    { name: "Coringa", type: "tome", description: "Aumenta 1 nível do terreno alvo.", image: "images/rei-do-nada_coringa.png" },
+                    { name: "Ferreiro", type: "edificio", description: "Todo ano, adiciona +2% dano de ataque às tropas e construções adjacentes.", image: "images/rei-do-nada_ferreiro.png" },
+                    { name: "Capa de Aço", type: "encantamento", description: "Cancela o primeiro dano que a unidade alvo receberia a cada batalha.", image: "images/rei-do-nada_capa-de-ao.png" }
                 ]
             },
             {
@@ -879,15 +879,15 @@
                 color: "var(--king-spells)",
                 icon: "🔮",
                 cards: [
-                    { name: "Cidadela", type: "base", description: "Atinge os oponentes com raios em cadeia.", image: "https://static.wikia.nocookie.net/9kings/images/b/bc/Citadel.png/revision/latest?cb=20250527203219" },
-                    { name: "Feiticeiro", type: "tropa", description: "Tropa à distância. Dispara ataques fortes mas lentos.", image: "https://static.wikia.nocookie.net/9kings/images/c/c7/Wizard.png/revision/latest?cb=20250527203949" },
-                    { name: "Mago de guerra", type: "tropa", description: "Tropa resistente que ataca com dano em área corpo a corpo.", image: "https://static.wikia.nocookie.net/9kings/images/5/51/Warlock.png/revision/latest?cb=20250527204050" },
-                    { name: "Estática", type: "encantamento", description: "Ataques das unidades causam uma cadeia de raios. Provoca +1 dano e +1 cadeia por carga.", image: "https://static.wikia.nocookie.net/9kings/images/c/c9/Static.png/revision/latest?cb=20250527205108" },
-                    { name: "Oferenda", type: "tome", description: "Destrói um terreno alvo para receber 3 cartas de tomos aleatórios.", image: "https://static.wikia.nocookie.net/9kings/images/4/47/Offering.png/revision/latest?cb=20250527205141" },
-                    { name: "Combustão", type: "encantamento", description: "Unidades causam dano em área igual a 20% de seu ataque ao matar um inimigo.", image: "https://static.wikia.nocookie.net/9kings/images/a/a4/Combustion.png/revision/latest?cb=20250527205219" },
-                    { name: "Xamã", type: "tropa", description: "Aumenta o ataque dos aliados com base em seu próprio ataque.", image: "https://static.wikia.nocookie.net/9kings/images/5/56/Shaman.png/revision/latest?cb=20250527205248" },
-                    { name: "Biblioteca", type: "edificio", description: "Todo ano, tem 50% de chance de duplicar um encantamento de uma tropa adjacente.", image: "https://static.wikia.nocookie.net/9kings/images/9/9b/Library.png/revision/latest?cb=20250527205313" },
-                    { name: "Pináculo", type: "torre", description: "Cura suas unidades mais próximas de morrer durante a batalha.", image: "https://static.wikia.nocookie.net/9kings/images/4/40/Spire_.png/revision/latest?cb=20250527205348" }
+                    { name: "Cidadela", type: "base", description: "Atinge os oponentes com raios em cadeia.", image: "images/rei-dos-feitios_cidadela.png" },
+                    { name: "Feiticeiro", type: "tropa", description: "Tropa à distância. Dispara ataques fortes mas lentos.", image: "images/rei-dos-feitios_feiticeiro.png" },
+                    { name: "Mago de guerra", type: "tropa", description: "Tropa resistente que ataca com dano em área corpo a corpo.", image: "images/rei-dos-feitios_mago-de-guerra.png" },
+                    { name: "Estática", type: "encantamento", description: "Ataques das unidades causam uma cadeia de raios. Provoca +1 dano e +1 cadeia por carga.", image: "images/rei-dos-feitios_esttica.png" },
+                    { name: "Oferenda", type: "tome", description: "Destrói um terreno alvo para receber 3 cartas de tomos aleatórios.", image: "images/rei-dos-feitios_oferenda.png" },
+                    { name: "Combustão", type: "encantamento", description: "Unidades causam dano em área igual a 20% de seu ataque ao matar um inimigo.", image: "images/rei-dos-feitios_combusto.png" },
+                    { name: "Xamã", type: "tropa", description: "Aumenta o ataque dos aliados com base em seu próprio ataque.", image: "images/rei-dos-feitios_xam.png" },
+                    { name: "Biblioteca", type: "edificio", description: "Todo ano, tem 50% de chance de duplicar um encantamento de uma tropa adjacente.", image: "images/rei-dos-feitios_biblioteca.png" },
+                    { name: "Pináculo", type: "torre", description: "Cura suas unidades mais próximas de morrer durante a batalha.", image: "images/rei-dos-feitios_pinnculo.png" }
                 ]
             },
             {
@@ -896,15 +896,15 @@
                 color: "var(--king-greed)",
                 icon: "💰",
                 cards: [
-                    { name: "Palácio", type: "base", description: "Atira um raio que mata um inimigo instantâneamente. Inimigos dourados dropam ouro.", image: "https://static.wikia.nocookie.net/9kings/images/c/c9/Palace.png/revision/latest?cb=20250528202525" },
-                    { name: "Obelisco", type: "edificio", description: "Todo ano, adiciona +2% de vel. de ataque às tropas e construções adjacentes.", image: "https://static.wikia.nocookie.net/9kings/images/b/b3/Beacon.png/revision/latest?cb=20250528202556" },
-                    { name: "Cofre", type: "edificio", description: "Recebe +3 ouro no final de todo ano.", image: "https://static.wikia.nocookie.net/9kings/images/c/c9/Vault.png/revision/latest?cb=20250528202633" },
-                    { name: "Ejetor", type: "torre", description: "Torre de alvo único. Ganha +1% vel de ataque a cada 1 ouro que você ganha.", image: "https://static.wikia.nocookie.net/9kings/images/a/a6/Dispenser.png/revision/latest?cb=20250528202752" },
-                    { name: "Toque de Midas", type: "encantamento", description: "Quando essa tropa matar, tem 2% de chance de receber 1 de ouro.", image: "https://static.wikia.nocookie.net/9kings/images/4/4b/Midas_Touch.png/revision/latest?cb=20250528202818" },
-                    { name: "Hipoteca", type: "tome", description: "Destrói 1 terreno em troca de 30 ouro por nível dele.", image: "https://static.wikia.nocookie.net/9kings/images/1/10/Mortgage.png/revision/latest?cb=20250528202848" },
-                    { name: "Investir", type: "tome", description: "Usa 30 ouro para aumentar todos atributos de uma tropa ou torre em 15%.", image: "https://static.wikia.nocookie.net/9kings/images/b/b2/Over-Invest.png/revision/latest?cb=20250528202910" },
-                    { name: "Mercenário", type: "tropa", description: "Guerreiros fortes, mas desleais. Você tem sempre 1 unidade a cada 15 de ouro que tenha.", image: "https://static.wikia.nocookie.net/9kings/images/0/00/Mercenary.png/revision/latest?cb=20250528202928" },
-                    { name: "Ladrão", type: "tropa", description: "Tropa assassina que salta para a linha de retaguarda inimiga.", image: "https://static.wikia.nocookie.net/9kings/images/f/fc/Thief.png/revision/latest?cb=20250528202943" }
+                    { name: "Palácio", type: "base", description: "Atira um raio que mata um inimigo instantâneamente. Inimigos dourados dropam ouro.", image: "images/rei-da-ganncia_palcio.png" },
+                    { name: "Obelisco", type: "edificio", description: "Todo ano, adiciona +2% de vel. de ataque às tropas e construções adjacentes.", image: "images/rei-da-ganncia_obelisco.png" },
+                    { name: "Cofre", type: "edificio", description: "Recebe +3 ouro no final de todo ano.", image: "images/rei-da-ganncia_cofre.png" },
+                    { name: "Ejetor", type: "torre", description: "Torre de alvo único. Ganha +1% vel de ataque a cada 1 ouro que você ganha.", image: "images/rei-da-ganncia_ejetor.png" },
+                    { name: "Toque de Midas", type: "encantamento", description: "Quando essa tropa matar, tem 2% de chance de receber 1 de ouro.", image: "images/rei-da-ganncia_toque-de-midas.png" },
+                    { name: "Hipoteca", type: "tome", description: "Destrói 1 terreno em troca de 30 ouro por nível dele.", image: "images/rei-da-ganncia_hipoteca.png" },
+                    { name: "Investir", type: "tome", description: "Usa 30 ouro para aumentar todos atributos de uma tropa ou torre em 15%.", image: "images/rei-da-ganncia_investir.png" },
+                    { name: "Mercenário", type: "tropa", description: "Guerreiros fortes, mas desleais. Você tem sempre 1 unidade a cada 15 de ouro que tenha.", image: "images/rei-da-ganncia_mercenrio.png" },
+                    { name: "Ladrão", type: "tropa", description: "Tropa assassina que salta para a linha de retaguarda inimiga.", image: "images/rei-da-ganncia_ladro.png" }
                 ]
             },
             {
@@ -913,15 +913,15 @@
                 color: "var(--king-blood)",
                 icon: "🩸",
                 cards: [
-                    { name: "Pagode", type: "base", description: "Invoca Diabretes no campo de batalha.", image: "https://static.wikia.nocookie.net/9kings/images/3/39/Pagoda.png/revision/latest?cb=20250528203945" },
-                    { name: "Bombardeiro", type: "tropa", description: "Corre até o inimigo e explode, causando dano em área.", image: "https://static.wikia.nocookie.net/9kings/images/8/84/Bomber.png/revision/latest?cb=20250528204008" },
-                    { name: "Diabrete", type: "tropa", description: "Tropa corpo a corpo rápida e agressiva com muitas unidades pequenas.", image: "https://static.wikia.nocookie.net/9kings/images/b/b3/Imp.png/revision/latest?cb=20250528204235" },
-                    { name: "Carnificina", type: "encantamento", description: "Unidades explodem quando mortas e causam 10% do próprio HP como dano em área.", image: "https://static.wikia.nocookie.net/9kings/images/4/4f/Carnage.png/revision/latest?cb=20250528204223" },
-                    { name: "Sacrifício", type: "tome", description: "Destrói o terreno alvo para subir 1 nível dos terrenos adjacentes.", image: "https://static.wikia.nocookie.net/9kings/images/1/18/Sacrifice.png/revision/latest?cb=20250528204208" },
-                    { name: "Vampirismo", type: "encantamento", description: "Os ataques das unidades as curam em 25% do dano causado.", image: "https://static.wikia.nocookie.net/9kings/images/7/7d/Varpirism.png/revision/latest?cb=20250531182225" },
-                    { name: "Moedor", type: "torre", description: "Torre de dano em área. Todo ano sacrifica 1 unidade adjacente por nível por +2 de dano.", image: "https://static.wikia.nocookie.net/9kings/images/8/8d/Mangler.png/revision/latest?cb=20250528204133" },
-                    { name: "Cemitério", type: "torre", description: "Se unidades adjacentes morrerm em batalha, Diabretes são invocados em seu lugar.", image: "https://static.wikia.nocookie.net/9kings/images/7/7b/Cemetery.png/revision/latest?cb=20250528204119" },
-                    { name: "Altar demoníaco", type: "torre", description: "Invoca um demônio por nível. A cada aliado morto, fica 0.5% mais forte para sempre.", image: "https://static.wikia.nocookie.net/9kings/images/d/d7/Demon%27s_Altar.png/revision/latest?cb=20250528204059" }
+                    { name: "Pagode", type: "base", description: "Invoca Diabretes no campo de batalha.", image: "images/rei-do-sangue_pagode.png" },
+                    { name: "Bombardeiro", type: "tropa", description: "Corre até o inimigo e explode, causando dano em área.", image: "images/rei-do-sangue_bombardeiro.png" },
+                    { name: "Diabrete", type: "tropa", description: "Tropa corpo a corpo rápida e agressiva com muitas unidades pequenas.", image: "images/rei-do-sangue_diabrete.png" },
+                    { name: "Carnificina", type: "encantamento", description: "Unidades explodem quando mortas e causam 10% do próprio HP como dano em área.", image: "images/rei-do-sangue_carnificina.png" },
+                    { name: "Sacrifício", type: "tome", description: "Destrói o terreno alvo para subir 1 nível dos terrenos adjacentes.", image: "images/rei-do-sangue_sacrifcio.png" },
+                    { name: "Vampirismo", type: "encantamento", description: "Os ataques das unidades as curam em 25% do dano causado.", image: "images/rei-do-sangue_vampirismo.png" },
+                    { name: "Moedor", type: "torre", description: "Torre de dano em área. Todo ano sacrifica 1 unidade adjacente por nível por +2 de dano.", image: "images/rei-do-sangue_moedor.png" },
+                    { name: "Cemitério", type: "torre", description: "Se unidades adjacentes morrerm em batalha, Diabretes são invocados em seu lugar.", image: "images/rei-do-sangue_cemitrio.png" },
+                    { name: "Altar demoníaco", type: "torre", description: "Invoca um demônio por nível. A cada aliado morto, fica 0.5% mais forte para sempre.", image: "images/rei-do-sangue_altar-demonaco.png" }
                 ]
             },
             {
@@ -930,15 +930,15 @@
                 color: "var(--king-nature)",
                 icon: "🌿",
                 cards: [
-                    { name: "Treant", type: "base", description: "Cria uma área de cura no chão que cura aliados e causa dano em inimigos.", image: "https://static.wikia.nocookie.net/9kings/images/3/31/Treant.png/revision/latest?cb=20250528205111" },
-                    { name: "Micélio", type: "torre", description: "Invoca um esporo lutador a cada 9 segundos em batalha. Esporos acumulam a cada batalha.", image: "https://static.wikia.nocookie.net/9kings/images/1/15/Mycelium.png/revision/latest?cb=20250606170422" },
-                    { name: "Clonagem", type: "encantamento", description: "Clone a carta do terreno selecionado.", image: "https://static.wikia.nocookie.net/9kings/images/3/34/Clone.png/revision/latest?cb=20250528205035" },
-                    { name: "Elfo", type: "tropa", description: "Tropa à distância. Sempre ataca o alvo mais distante.", image: "https://static.wikia.nocookie.net/9kings/images/8/89/Elf.png/revision/latest?cb=20250528205021" },
-                    { name: "Javali", type: "tropa", description: "É montado por tropas adjacentes. Para cada 1 HP, aumenta os atributos da unidade montada em 1%.", image: "https://static.wikia.nocookie.net/9kings/images/6/6f/Boar.png/revision/latest?cb=20250528205007" },
-                    { name: "Pomar", type: "torre", description: "Cria raízes que prendem os inimigos. 3 raízes por nível.", image: "https://static.wikia.nocookie.net/9kings/images/2/22/Orchard.png/revision/latest?cb=20250528204951" },
-                    { name: "Procriar", type: "tome", description: "Adicione 9 unidades à tropa selecionada.", image: "https://static.wikia.nocookie.net/9kings/images/0/07/Procreate.png/revision/latest?cb=20250528204932" },
-                    { name: "Floresta", type: "edificio", description: "Todo ano, adiciona +2% HP a tropas adjacentes.", image: "https://static.wikia.nocookie.net/9kings/images/c/c1/Forest.png/revision/latest?cb=20250528204912" },
-                    { name: "Frasco de Veneno", type: "encantamento", description: "Ataques das unidades aplicam 1 carga de veneno no inimigo.", image: "https://static.wikia.nocookie.net/9kings/images/4/49/Poison_Vial.png/revision/latest?cb=20250528204859" }
+                    { name: "Treant", type: "base", description: "Cria uma área de cura no chão que cura aliados e causa dano em inimigos.", image: "images/rei-da-natureza_treant.png" },
+                    { name: "Micélio", type: "torre", description: "Invoca um esporo lutador a cada 9 segundos em batalha. Esporos acumulam a cada batalha.", image: "images/rei-da-natureza_miclio.png" },
+                    { name: "Clonagem", type: "tome", description: "Clone a carta do terreno selecionado.", image: "images/rei-da-natureza_clonagem.png" },
+                    { name: "Elfo", type: "tropa", description: "Tropa à distância. Sempre ataca o alvo mais distante.", image: "images/rei-da-natureza_elfo.png" },
+                    { name: "Javali", type: "tropa", description: "É montado por tropas adjacentes. Para cada 1 HP, aumenta os atributos da unidade montada em 1%.", image: "images/rei-da-natureza_javali.png" },
+                    { name: "Pomar", type: "torre", description: "Cria raízes que prendem os inimigos. 3 raízes por nível.", image: "images/rei-da-natureza_pomar.png" },
+                    { name: "Procriar", type: "tome", description: "Adicione 9 unidades à tropa selecionada.", image: "images/rei-da-natureza_procriar.png" },
+                    { name: "Floresta", type: "edificio", description: "Todo ano, adiciona +2% HP a tropas adjacentes.", image: "images/rei-da-natureza_floresta.png" },
+                    { name: "Frasco de Veneno", type: "encantamento", description: "Ataques das unidades aplicam 1 carga de veneno no inimigo.", image: "images/rei-da-natureza_frasco-de-veneno.png" }
                 ]
             },
             {
@@ -947,15 +947,15 @@
                 color: "var(--king-stone)",
                 icon: "🪨",
                 cards: [
-                    { name: "Fortaleza", type: "base", description: "Invoca torres que atiram nos inimigos próximos.", image: "https://static.wikia.nocookie.net/9kings/images/7/78/Stronghold.png/revision/latest?cb=20250528205906" },
-                    { name: "Balista", type: "tropa", description: "Tropa à distância que dispara enormes dardos com dano perfurante.", image: "https://static.wikia.nocookie.net/9kings/images/d/d5/Ballista.png/revision/latest?cb=20250528205746" },
-                    { name: "Caçador", type: "tropa", description: "Constrói armadilhas que infligem dano e se acumulam se não ativadas.", image: "https://static.wikia.nocookie.net/9kings/images/b/b8/Trapper.png/revision/latest?cb=20250528205729" },
-                    { name: "Caldeirão", type: "edificio", description: "Terrenos adjacentes causam dano de veneno. +1 carga de veneno por nível.", image: "https://static.wikia.nocookie.net/9kings/images/3/37/Cauldron.png/revision/latest?cb=20250528205848" },
-                    { name: "Muralha", type: "edificio", description: "Constrói muralhas defensivas no seu reino.", image: "https://static.wikia.nocookie.net/9kings/images/a/ae/Wallmaker.png/revision/latest?cb=20250528205713" },
-                    { name: "Pedreira", type: "edificio", description: "Adiciona +2% de dano a todas as torres e base a cada ano.", image: "https://static.wikia.nocookie.net/9kings/images/2/28/Quarry.png/revision/latest?cb=20250528205817" },
-                    { name: "Terraplanagem", type: "encantamento", description: "Desbloqueia os terrenos adjacentes do alvo. Até 3 cópias da carta alvo voltam à sua mão.", image: "https://static.wikia.nocookie.net/9kings/images/a/a7/Earthworks.png/revision/latest?cb=20250528205804" },
-                    { name: "Torre-Chamas", type: "torre", description: "Torre móvel que vai ao campo de batalha para queimar inimigos.", image: "https://static.wikia.nocookie.net/9kings/images/d/d0/Flametower.png/revision/latest?cb=20250528205604" },
-                    { name: "Trabuco", type: "torre", description: "Torre de múltiplos alvos. Dispara +1 projétil por construção no seu reino.", image: "https://static.wikia.nocookie.net/9kings/images/c/cf/Trebuchet.png/revision/latest?cb=20250528205833" }
+                    { name: "Fortaleza", type: "base", description: "Invoca torres que atiram nos inimigos próximos.", image: "images/rei-da-pedra_fortaleza.png" },
+                    { name: "Balista", type: "tropa", description: "Tropa à distância que dispara enormes dardos com dano perfurante.", image: "images/rei-da-pedra_balista.png" },
+                    { name: "Caçador", type: "tropa", description: "Constrói armadilhas que infligem dano e se acumulam se não ativadas.", image: "images/rei-da-pedra_caador.png" },
+                    { name: "Caldeirão", type: "edificio", description: "Terrenos adjacentes causam dano de veneno. +1 carga de veneno por nível.", image: "images/rei-da-pedra_caldeiro.png" },
+                    { name: "Muralha", type: "edificio", description: "Constrói muralhas defensivas no seu reino.", image: "images/rei-da-pedra_muralha.png" },
+                    { name: "Pedreira", type: "edificio", description: "Adiciona +2% de dano a todas as torres e base a cada ano.", image: "images/rei-da-pedra_pedreira.png" },
+                    { name: "Terraplanagem", type: "encantamento", description: "Desbloqueia os terrenos adjacentes do alvo. Até 3 cópias da carta alvo voltam à sua mão.", image: "images/rei-da-pedra_terraplanagem.png" },
+                    { name: "Torre-Chamas", type: "torre", description: "Torre móvel que vai ao campo de batalha para queimar inimigos.", image: "images/rei-da-pedra_torre-chamas.png" },
+                    { name: "Trabuco", type: "torre", description: "Torre de múltiplos alvos. Dispara +1 projétil por construção no seu reino.", image: "images/rei-da-pedra_trabuco.png" }
                 ]
             },
             {
@@ -964,15 +964,15 @@
                 color: "var(--king-progress)",
                 icon: "⚙️",
                 cards: [
-                    { name: "Nave Mãe", type: "base", description: "Voa até os inimigos e ataca como unidade. Pode ser controlada no campo de batalha.", image: "https://static.wikia.nocookie.net/9kings/images/e/e9/Mothership.png/revision/latest?cb=20250528211154" },
-                    { name: "Executor", type: "tropa", description: "Tropa à distância. Sempre ataca o inimigo com a menor vida.", image: "https://static.wikia.nocookie.net/9kings/images/9/93/Executioner.png/revision/latest?cb=20250528211137" },
-                    { name: "Defensor", type: "tropa", description: "Unidade de tanque que não ataca, mas reflete todo o dano recebido.", image: "https://static.wikia.nocookie.net/9kings/images/0/0d/Defender.png/revision/latest?cb=20250528211118" },
-                    { name: "Rato Cobaia", type: "tropa", description: "Tropa fraca. Recebe +1 nível sempre que um terreno adjacente sobe de nível, sem nível máximo.", image: "https://static.wikia.nocookie.net/9kings/images/d/df/Lab_Rat.png/revision/latest?cb=20250528211106" },
-                    { name: "Concabulador", type: "edificio", description: "No nível 3, este edifício sobe 1 nível de todos os seus terrenos.", image: "https://static.wikia.nocookie.net/9kings/images/9/96/Concabulator.png/revision/latest?cb=20250528211053" },
-                    { name: "Reforço", type: "encantamento", description: "Unidades ganham +1% de dano sempre que qualquer terreno sobe de nível.", image: "https://static.wikia.nocookie.net/9kings/images/2/26/Reinforce.png/revision/latest?cb=20250528211032" },
-                    { name: "Precisão", type: "encantamento", description: "O primeiro ataque das unidades é sempre crítico.", image: "https://static.wikia.nocookie.net/9kings/images/e/ee/Precision.png/revision/latest?cb=20250528211016" },
-                    { name: "Conversor", type: "torre", description: "Transforma inimigos em ratos que lutam por você e herdam os atributos do Conversor.", image: "https://static.wikia.nocookie.net/9kings/images/3/35/Converter.png/revision/latest?cb=20250528211001" },
-                    { name: "Reforma", type: "tome", description: "Destrói 1 terreno e sobe o nível de 2 terrenos aleatórios. Cada uso dá +1 level up.", image: "https://static.wikia.nocookie.net/9kings/images/b/bb/Overhaul.png/revision/latest?cb=20250528210933" }
+                    { name: "Nave Mãe", type: "base", description: "Voa até os inimigos e ataca como unidade. Pode ser controlada no campo de batalha.", image: "images/rei-do-progresso_nave-me.png" },
+                    { name: "Executor", type: "tropa", description: "Tropa à distância. Sempre ataca o inimigo com a menor vida.", image: "images/rei-do-progresso_executor.png" },
+                    { name: "Defensor", type: "tropa", description: "Unidade de tanque que não ataca, mas reflete todo o dano recebido.", image: "images/rei-do-progresso_defensor.png" },
+                    { name: "Rato Cobaia", type: "tropa", description: "Tropa fraca. Recebe +1 nível sempre que um terreno adjacente sobe de nível, sem nível máximo.", image: "images/rei-do-progresso_rato-cobaia.png" },
+                    { name: "Concabulador", type: "edificio", description: "No nível 3, este edifício sobe 1 nível de todos os seus terrenos.", image: "images/rei-do-progresso_concabulador.png" },
+                    { name: "Reforço", type: "encantamento", description: "Unidades ganham +1% de dano sempre que qualquer terreno sobe de nível.", image: "images/rei-do-progresso_reforo.png" },
+                    { name: "Precisão", type: "encantamento", description: "O primeiro ataque das unidades é sempre crítico.", image: "images/rei-do-progresso_preciso.png" },
+                    { name: "Conversor", type: "torre", description: "Transforma inimigos em ratos que lutam por você e herdam os atributos do Conversor.", image: "images/rei-do-progresso_conversor.png" },
+                    { name: "Reforma", type: "tome", description: "Destrói 1 terreno e sobe o nível de 2 terrenos aleatórios. Cada uso dá +1 level up.", image: "images/rei-do-progresso_reforma.png" }
                 ]
             },
             {
@@ -981,10 +981,10 @@
                 color: "var(--special)",
                 icon: "🌈",
                 cards: [
-                    { name: "Destruição", type: "tome", description: "Destrói o terreno alvo para sempre. Aciona um evento do Conselho Real.", image: "https://static.wikia.nocookie.net/9kings/images/e/e1/Razing.png/revision/latest?cb=20250528020146" },
-                    { name: "Santuário", type: "edificio", description: "Gasta 9 de ouro por ano para subir de nível um terreno aleatório. Custa 3 de ouro a menos por nível.", image: "https://static.wikia.nocookie.net/9kings/images/e/e8/Shrine.png/revision/latest?cb=20250601174800" },
-                    { name: "Bode expiatório", type: "tropa", description: "Unidade passiva de retaguarda. Se morto em batalha, gera 3 de ouro por nível.", image: "https://static.wikia.nocookie.net/9kings/images/0/0b/Scapegoat.png/revision/latest?cb=20250527000436" },
-                    { name: "Unificar", type: "tome", description: "Sacrifica todas as tropas adjacentes ao alvo. O terreno alvo ganha o número de unidades sacrificadas.", image: "https://static.wikia.nocookie.net/9kings/images/c/cb/Unify.png/revision/latest?cb=20250528000153" }
+                    { name: "Destruição", type: "tome", description: "Destrói o terreno alvo para sempre. Aciona um evento do Conselho Real.", image: "images/cartas-especiais_destruio.png" },
+                    { name: "Santuário", type: "edificio", description: "Gasta 9 de ouro por ano para subir de nível um terreno aleatório. Custa 3 de ouro a menos por nível.", image: "images/cartas-especiais_santurio.png" },
+                    { name: "Bode expiatório", type: "tropa", description: "Unidade passiva de retaguarda. Se morto em batalha, gera 3 de ouro por nível.", image: "images/cartas-especiais_bode-expiatrio.png" },
+                    { name: "Unificar", type: "tome", description: "Sacrifica todas as tropas adjacentes ao alvo. O terreno alvo ganha o número de unidades sacrificadas.", image: "images/cartas-especiais_unificar.png" }
                 ]
             }
         ];

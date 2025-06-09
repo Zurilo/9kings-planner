@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planejador Avançado - 9Kings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --king-nothing: #7fb3d5;
+            --king-spells: #9b59b6;
+            --king-greed: #f1c40f;
+            --king-blood: #e74c3c;
+            --king-nature: #2ecc71;
+            --king-stone: #95a5a6;
+            --king-progress: #d35400;
+            --special: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080);
+            --dark-bg: #1a1a2e;
+            --panel-bg: #16213e;
+            --card-bg: #0f3460;
+            --text-light: #e6e6e6;
+            --text-muted: #a0a0c0;
+            --border-color: #4a4a6a;
+            --grid-bg: rgba(255, 255, 255, 0.05);
+            --enchantment-size: 28px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            padding: 20px;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(15, 52, 96, 0.3) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(159, 90, 253, 0.2) 0%, transparent 20%);
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            color: #f8f9fa;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(to right, #7fb3d5, #9b59b6, #f1c40f, #e74c3c, #2ecc71, #95a5a6, #d35400);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--king-nothing), var(--king-blood));
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 25px auto;
+            line-height: 1.6;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .king-selector {
+            flex: 1;
+            min-width: 320px;
+            background: var(--panel-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .king-selector::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--king-nothing), var(--king-spells), var(--king-greed), var(--king-blood), var(--king-nature), var(--king-stone), var(--king-progress), var(--special));
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #f8f9fa;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--king-blood);
+            border-radius: 2px;
+        }
+        
+        .king-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .king-option {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .king-option:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .king-option.active {
+            border: 3px solid white;
+            transform: scale(1.08);
+        }
+        
+        .king-option::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.3));
+            z-index: 1;
+        }
+        
+        .king-option span {
+            position: relative;
+            z-index: 2;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .king-icon {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            z-index: 2;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+        }
+        
+        .cards-container {
+            margin-top: 40px;
+        }
+        
+        .card-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-btn.active {
+            background: var(--king-blood);
+            border-color: transparent;
+        }
+        
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .card {
+            width: 120px;
+            height: 180px;
+            border-radius: 12px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px) rotate(2deg);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+    
+        .card-image {
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 12px;
+        }
+        
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px;
+            text-align: center;
+            border-radius: 0 0 12px 12px;
+            z-index: 2;
+        }
+        
+        .card-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+        
+        .card-type {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .card.tome {
+            cursor: not-allowed;
+            opacity: 0.7;
+            filter: grayscale(0.5);
+        }
+        
+        .card.tome::after {
+            content: '🚫';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            opacity: 0.8;
+            z-index: 3;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+        
+        .all-kings-cards {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .game-board {
+            flex: 2;
+            min-width: 700px;
+            background: var(--panel-bg);
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+            margin: 40px auto;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .grid-cell {
+            background: var(--grid-bg);
+            border-radius: 10px;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .grid-cell.highlight {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--king-nature);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .grid-cell.base-allowed {
+            background: rgba(123, 239, 178, 0.1);
+            border-color: var(--king-nature);
+        }
+        
+        .placed-card {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            cursor: grab;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .placed-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .placed-card .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px;
+            text-align: center;
+            border-radius: 0 0 8px 8px;
+            z-index: 2;
+        }
+        
+        .enchantments-container {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            z-index: 3;
+            max-height: calc(100% - 10px);
+            overflow-y: auto;
+            padding: 2px;
+            /* Estilo para ocultar a barra de rolagem */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        
+        .enchantments-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+        
+        .enchantment-badge {
+            width: var(--enchantment-size);
+            height: var(--enchantment-size);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        
+        .enchantment-badge:hover {
+            transform: scale(1.2);
+        }
+        
+        .king-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            z-index: 2;
+        }
+        
+        .controls {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #4a4a8a, #3a3a7a);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to right, #5a5a9a, #4a4a8a);
+        }
+        
+        .btn.secondary {
+            background: linear-gradient(to right, #6c757d, #5a6268);
+        }
+        
+        .btn.secondary:hover {
+            background: linear-gradient(to right, #7a8288, #687078);
+        }
+        
+        .instructions {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            font-size: 1rem;
+            line-height: 1.7;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .instructions h3 {
+            margin-bottom: 20px;
+            color: #f1c40f;
+            font-size: 1.4rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .instructions h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #f1c40f;
+            border-radius: 2px;
+        }
+        
+        .instructions ul {
+            padding-left: 25px;
+        }
+        
+        .instructions li {
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .instructions li::before {
+            content: '•';
+            color: var(--king-nature);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        
+        .stats-panel {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--king-nature);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .king-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+        
+        .king-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .king-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .card-tooltip {
+            position: fixed;
+            z-index: 1000;
+            width: 380px;
+            background: rgba(10, 15, 30, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .tooltip-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .tooltip-king-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        
+        .tooltip-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f8f9fa;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .tooltip-content {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .tooltip-image {
+            width: 45%;
+            height: 200px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 8px;
+        }
+        
+        .tooltip-info {
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .tooltip-type {
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .tooltip-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #d0d0e0;
+        }
+        
+        .special-king {
+            background: var(--special);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+        }
+        
+        /* --- [INÍCIO] CSS CORRIGIDO --- */
+        @keyframes gradientBG {
+            0% { background-position: center, 0% 50%; }
+            50% { background-position: center, 100% 50%; }
+            100% { background-position: center, 0% 50%; }
+        }
+        /* --- [FIM] CSS CORRIGIDO --- */
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .game-board {
+                min-width: 100%;
+            }
+            
+            .grid-container {
+                max-width: 100%;
+            }
+            
+            .king-option {
+                width: 90px;
+                height: 90px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 500px;
+            }
+            
+            .king-option {
+                width: 80px;
+                height: 80px;
+                font-size: 0.8rem;
+            }
+            
+            .card {
+                width: 110px;
+                height: 165px;
+            }
+            
+            .btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .card-tooltip {
+                width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Planejador Estratégico 9Kings</h1>
+            <p class="subtitle">Crie, visualize e refine suas estratégias para dominar o jogo. Selecione seu rei, posicione cartas no tabuleiro 5x5 e planeje sua build perfeita para o endgame.</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="king-selector">
+                <h2 class="section-title">Selecione seu Rei</h2>
+                <div class="king-options">
+                    </div>
+                
+                <div class="king-info">
+                    <div class="king-color" id="current-king-color"></div>
+                    <div class="king-name" id="current-king-name">Selecione um rei</div>
+                </div>
+                
+                <div class="cards-container">
+                    <h2 class="section-title">Cartas Disponíveis</h2>
+                    <div class="card-filters">
+                        <button class="filter-btn active" data-type="all">
+                            <i class="fas fa-layer-group"></i> Todas
+                        </button>
+                        <button class="filter-btn" data-type="base">
+                            <i class="fas fa-crown"></i> Base
+                        </button>
+                        <button class="filter-btn" data-type="tropa">
+                            <i class="fas fa-swords"></i> Tropa
+                        </button>
+                        <button class="filter-btn" data-type="encantamento">
+                            <i class="fas fa-wand-magic-sparkles"></i> Encantamento
+                        </button>
+                        <button class="filter-btn" data-type="torre">
+                            <i class="fas fa-tower-observation"></i> Torre
+                        </button>
+                        <button class="filter-btn" data-type="edificio">
+                            <i class="fas fa-building"></i> Edifício
+                        </button>
+                        <button class="filter-btn" data-type="tome">
+                            <i class="fas fa-book"></i> Tomo
+                        </button>
+                    </div>
+                    <div class="card-list" id="king-cards">
+                        </div>
+                </div>
+                
+                <div class="all-kings-cards">
+                    <h2 class="section-title">Cartas de Outros Reinos</h2>
+                    <div class="card-list" id="all-cards">
+                        </div>
+                </div>
+            </div>
+            
+            <div class="game-board">
+                <h2 class="section-title">Tabuleiro 5x5</h2>
+                
+                <div class="grid-container">
+                    </div>
+                
+                <div class="stats-panel">
+                    <div class="stat-item">
+                        <div class="stat-value" id="troops-count">0</div>
+                        <div class="stat-label">Tropas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="towers-count">0</div>
+                        <div class="stat-label">Torres</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="buildings-count">0</div>
+                        <div class="stat-label">Edifícios</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="enchantments-count">0</div>
+                        <div class="stat-label">Encantamentos</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" id="reset-btn">
+                        <i class="fas fa-redo"></i> Reiniciar Tabuleiro
+                    </button>
+                    <button class="btn" id="clear-btn">
+                        <i class="fas fa-trash"></i> Limpar Tudo
+                    </button>
+                    <button class="btn secondary" id="save-btn">
+                        <i class="fas fa-save"></i> Salvar Build
+                    </button>
+                </div>
+                
+                <div class="instructions">
+                    <h3>Dicas Estratégicas</h3>
+                    <ul>
+                        <li><strong>Posicione sua base</strong> apenas nos terrenos centrais (marcados com borda verde)</li>
+                        <li><strong>Encantamentos</strong> podem ser aplicados em tropas - passe o mouse sobre os ícones para ver detalhes</li>
+                        <li><strong>Arraste cartas</strong> entre os terrenos para reposicioná-las</li>
+                        <li><strong>Cartas de Tomo (🚫)</strong> não podem ser colocadas no tabuleiro</li>
+                        <li><strong>Cartas Especiais</strong> (com efeito iridescente) podem ser usadas com qualquer rei</li>
+                        <li><strong>Passe o mouse</strong> sobre as cartas para ver informações detalhadas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-tooltip" id="card-tooltip">
+        <div class="tooltip-header">
+            <div class="tooltip-king-color" id="tooltip-king-color"></div>
+            <div class="tooltip-title" id="tooltip-title">Nome da Carta</div>
+        </div>
+        <div class="tooltip-content">
+            <div class="tooltip-image" id="tooltip-image"></div>
+            <div class="tooltip-info">
+                <div class="tooltip-type" id="tooltip-type">Tipo</div>
+                <div class="tooltip-description" id="tooltip-description">Descrição da carta aparecerá aqui com detalhes sobre suas habilidades e efeitos no jogo.</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Dados dos reis e suas cartas baseados no CSV
+        const kingsData = [
+            {
+                id: 1,
+                name: "Rei do Nada",
+                color: "var(--king-nothing)",
+                icon: "👑",
+                cards: [
+                    { name: "Castelo", type: "base", description: "Arremessa um projétil de pedra nos inimigos.", image: "https://static.wikia.nocookie.net/9kings/images/1/19/Castle_-_King_of_Nothing.png/revision/latest?cb=20250526165724" },
+                    { name: "Soldado", type: "tropa", description: "Tropa corpo a corpo equilibrada.", image: "https://static.wikia.nocookie.net/9kings/images/9/97/Soldier_-_King_of_Nothing.png/revision/latest?cb=20250526170533" },
+                    { name: "Paladino", type: "tropa", description: "Tropa corpo a corpo com alta defesa.", image: "https://static.wikia.nocookie.net/9kings/images/e/ea/Paladin_-_King_of_Nothing.png/revision/latest?cb=20250526173520" },
+                    { name: "Arqueiro", type: "tropa", description: "Provoca dano fraco e rápido à distância.", image: "https://static.wikia.nocookie.net/9kings/images/8/86/Archer_-_King_of_Nothing.png/revision/latest?cb=20250526173905" },
+                    { name: "Torre de guarda", type: "torre", description: "Atira poderosas flechas de alvo único.", image: "https://static.wikia.nocookie.net/9kings/images/9/9c/Scout_Tower_-_King_of_Nothing.png/revision/latest?cb=20250526173959" },
+                    { name: "Fazenda", type: "edificio", description: "Todo ano, adiciona +1 unidade a uma tropa adjacente.", image: "https://static.wikia.nocookie.net/9kings/images/c/cf/Farm_-_King_of_Nothing.png/revision/latest?cb=20250526174123" },
+                    { name: "Coringa", type: "tome", description: "Aumenta 1 nível do terreno alvo.", image: "https://static.wikia.nocookie.net/9kings/images/d/db/Wildcard_-_King_of_Nothing.png/revision/latest?cb=20250526174217" },
+                    { name: "Ferreiro", type: "edificio", description: "Todo ano, adiciona +2% dano de ataque às tropas e construções adjacentes.", image: "https://static.wikia.nocookie.net/9kings/images/4/47/Blacksmith_-_King_of_Nothing.png/revision/latest?cb=20250526174258" },
+                    { name: "Capa de Aço", type: "encantamento", description: "Cancela o primeiro dano que a unidade alvo receberia a cada batalha.", image: "https://static.wikia.nocookie.net/9kings/images/7/74/Steel_Coat_-_King_of_Nothing.png/revision/latest?cb=20250526174342" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Rei dos Feitiços",
+                color: "var(--king-spells)",
+                icon: "🔮",
+                cards: [
+                    { name: "Cidadela", type: "base", description: "Atinge os oponentes com raios em cadeia.", image: "https://static.wikia.nocookie.net/9kings/images/b/bc/Citadel.png/revision/latest?cb=20250527203219" },
+                    { name: "Feiticeiro", type: "tropa", description: "Tropa à distância. Dispara ataques fortes mas lentos.", image: "https://static.wikia.nocookie.net/9kings/images/c/c7/Wizard.png/revision/latest?cb=20250527203949" },
+                    { name: "Mago de guerra", type: "tropa", description: "Tropa resistente que ataca com dano em área corpo a corpo.", image: "https://static.wikia.nocookie.net/9kings/images/5/51/Warlock.png/revision/latest?cb=20250527204050" },
+                    { name: "Estática", type: "encantamento", description: "Ataques das unidades causam uma cadeia de raios. Provoca +1 dano e +1 cadeia por carga.", image: "https://static.wikia.nocookie.net/9kings/images/c/c9/Static.png/revision/latest?cb=20250527205108" },
+                    { name: "Oferenda", type: "tome", description: "Destrói um terreno alvo para receber 3 cartas de tomos aleatórios.", image: "https://static.wikia.nocookie.net/9kings/images/4/47/Offering.png/revision/latest?cb=20250527205141" },
+                    { name: "Combustão", type: "encantamento", description: "Unidades causam dano em área igual a 20% de seu ataque ao matar um inimigo.", image: "https://static.wikia.nocookie.net/9kings/images/a/a4/Combustion.png/revision/latest?cb=20250527205219" },
+                    { name: "Xamã", type: "tropa", description: "Aumenta o ataque dos aliados com base em seu próprio ataque.", image: "https://static.wikia.nocookie.net/9kings/images/5/56/Shaman.png/revision/latest?cb=20250527205248" },
+                    { name: "Biblioteca", type: "edificio", description: "Todo ano, tem 50% de chance de duplicar um encantamento de uma tropa adjacente.", image: "https://static.wikia.nocookie.net/9kings/images/9/9b/Library.png/revision/latest?cb=20250527205313" },
+                    { name: "Pináculo", type: "torre", description: "Cura suas unidades mais próximas de morrer durante a batalha.", image: "https://static.wikia.nocookie.net/9kings/images/4/40/Spire_.png/revision/latest?cb=20250527205348" }
+                ]
+            },
+            {
+                id: 3,
+                name: "Rei da Ganância",
+                color: "var(--king-greed)",
+                icon: "💰",
+                cards: [
+                    { name: "Palácio", type: "base", description: "Atira um raio que mata um inimigo instantâneamente. Inimigos dourados dropam ouro.", image: "https://static.wikia.nocookie.net/9kings/images/c/c9/Palace.png/revision/latest?cb=20250528202525" },
+                    { name: "Obelisco", type: "edificio", description: "Todo ano, adiciona +2% de vel. de ataque às tropas e construções adjacentes.", image: "https://static.wikia.nocookie.net/9kings/images/b/b3/Beacon.png/revision/latest?cb=20250528202556" },
+                    { name: "Cofre", type: "edificio", description: "Recebe +3 ouro no final de todo ano.", image: "https://static.wikia.nocookie.net/9kings/images/c/c9/Vault.png/revision/latest?cb=20250528202633" },
+                    { name: "Ejetor", type: "torre", description: "Torre de alvo único. Ganha +1% vel de ataque a cada 1 ouro que você ganha.", image: "https://static.wikia.nocookie.net/9kings/images/a/a6/Dispenser.png/revision/latest?cb=20250528202752" },
+                    { name: "Toque de Midas", type: "encantamento", description: "Quando essa tropa matar, tem 2% de chance de receber 1 de ouro.", image: "https://static.wikia.nocookie.net/9kings/images/4/4b/Midas_Touch.png/revision/latest?cb=20250528202818" },
+                    { name: "Hipoteca", type: "tome", description: "Destrói 1 terreno em troca de 30 ouro por nível dele.", image: "https://static.wikia.nocookie.net/9kings/images/1/10/Mortgage.png/revision/latest?cb=20250528202848" },
+                    { name: "Investir", type: "tome", description: "Usa 30 ouro para aumentar todos atributos de uma tropa ou torre em 15%.", image: "https://static.wikia.nocookie.net/9kings/images/b/b2/Over-Invest.png/revision/latest?cb=20250528202910" },
+                    { name: "Mercenário", type: "tropa", description: "Guerreiros fortes, mas desleais. Você tem sempre 1 unidade a cada 15 de ouro que tenha.", image: "https://static.wikia.nocookie.net/9kings/images/0/00/Mercenary.png/revision/latest?cb=20250528202928" },
+                    { name: "Ladrão", type: "tropa", description: "Tropa assassina que salta para a linha de retaguarda inimiga.", image: "https://static.wikia.nocookie.net/9kings/images/f/fc/Thief.png/revision/latest?cb=20250528202943" }
+                ]
+            },
+            {
+                id: 4,
+                name: "Rei do Sangue",
+                color: "var(--king-blood)",
+                icon: "🩸",
+                cards: [
+                    { name: "Pagode", type: "base", description: "Invoca Diabretes no campo de batalha.", image: "https://static.wikia.nocookie.net/9kings/images/3/39/Pagoda.png/revision/latest?cb=20250528203945" },
+                    { name: "Bombardeiro", type: "tropa", description: "Corre até o inimigo e explode, causando dano em área.", image: "https://static.wikia.nocookie.net/9kings/images/8/84/Bomber.png/revision/latest?cb=20250528204008" },
+                    { name: "Diabrete", type: "tropa", description: "Tropa corpo a corpo rápida e agressiva com muitas unidades pequenas.", image: "https://static.wikia.nocookie.net/9kings/images/b/b3/Imp.png/revision/latest?cb=20250528204235" },
+                    { name: "Carnificina", type: "encantamento", description: "Unidades explodem quando mortas e causam 10% do próprio HP como dano em área.", image: "https://static.wikia.nocookie.net/9kings/images/4/4f/Carnage.png/revision/latest?cb=20250528204223" },
+                    { name: "Sacrifício", type: "tome", description: "Destrói o terreno alvo para subir 1 nível dos terrenos adjacentes.", image: "https://static.wikia.nocookie.net/9kings/images/1/18/Sacrifice.png/revision/latest?cb=20250528204208" },
+                    { name: "Vampirismo", type: "encantamento", description: "Os ataques das unidades as curam em 25% do dano causado.", image: "https://static.wikia.nocookie.net/9kings/images/7/7d/Varpirism.png/revision/latest?cb=20250531182225" },
+                    { name: "Moedor", type: "torre", description: "Torre de dano em área. Todo ano sacrifica 1 unidade adjacente por nível por +2 de dano.", image: "https://static.wikia.nocookie.net/9kings/images/8/8d/Mangler.png/revision/latest?cb=20250528204133" },
+                    { name: "Cemitério", type: "torre", description: "Se unidades adjacentes morrerm em batalha, Diabretes são invocados em seu lugar.", image: "https://static.wikia.nocookie.net/9kings/images/7/7b/Cemetery.png/revision/latest?cb=20250528204119" },
+                    { name: "Altar demoníaco", type: "torre", description: "Invoca um demônio por nível. A cada aliado morto, fica 0.5% mais forte para sempre.", image: "https://static.wikia.nocookie.net/9kings/images/d/d7/Demon%27s_Altar.png/revision/latest?cb=20250528204059" }
+                ]
+            },
+            {
+                id: 5,
+                name: "Rei da Natureza",
+                color: "var(--king-nature)",
+                icon: "🌿",
+                cards: [
+                    { name: "Treant", type: "base", description: "Cria uma área de cura no chão que cura aliados e causa dano em inimigos.", image: "https://static.wikia.nocookie.net/9kings/images/3/31/Treant.png/revision/latest?cb=20250528205111" },
+                    { name: "Micélio", type: "torre", description: "Invoca um esporo lutador a cada 9 segundos em batalha. Esporos acumulam a cada batalha.", image: "https://static.wikia.nocookie.net/9kings/images/1/15/Mycelium.png/revision/latest?cb=20250606170422" },
+                    { name: "Clonagem", type: "encantamento", description: "Clone a carta do terreno selecionado.", image: "https://static.wikia.nocookie.net/9kings/images/3/34/Clone.png/revision/latest?cb=20250528205035" },
+                    { name: "Elfo", type: "tropa", description: "Tropa à distância. Sempre ataca o alvo mais distante.", image: "https://static.wikia.nocookie.net/9kings/images/8/89/Elf.png/revision/latest?cb=20250528205021" },
+                    { name: "Javali", type: "tropa", description: "É montado por tropas adjacentes. Para cada 1 HP, aumenta os atributos da unidade montada em 1%.", image: "https://static.wikia.nocookie.net/9kings/images/6/6f/Boar.png/revision/latest?cb=20250528205007" },
+                    { name: "Pomar", type: "torre", description: "Cria raízes que prendem os inimigos. 3 raízes por nível.", image: "https://static.wikia.nocookie.net/9kings/images/2/22/Orchard.png/revision/latest?cb=20250528204951" },
+                    { name: "Procriar", type: "tome", description: "Adicione 9 unidades à tropa selecionada.", image: "https://static.wikia.nocookie.net/9kings/images/0/07/Procreate.png/revision/latest?cb=20250528204932" },
+                    { name: "Floresta", type: "edificio", description: "Todo ano, adiciona +2% HP a tropas adjacentes.", image: "https://static.wikia.nocookie.net/9kings/images/c/c1/Forest.png/revision/latest?cb=20250528204912" },
+                    { name: "Frasco de Veneno", type: "encantamento", description: "Ataques das unidades aplicam 1 carga de veneno no inimigo.", image: "https://static.wikia.nocookie.net/9kings/images/4/49/Poison_Vial.png/revision/latest?cb=20250528204859" }
+                ]
+            },
+            {
+                id: 6,
+                name: "Rei da Pedra",
+                color: "var(--king-stone)",
+                icon: "🪨",
+                cards: [
+                    { name: "Fortaleza", type: "base", description: "Invoca torres que atiram nos inimigos próximos.", image: "https://static.wikia.nocookie.net/9kings/images/7/78/Stronghold.png/revision/latest?cb=20250528205906" },
+                    { name: "Balista", type: "tropa", description: "Tropa à distância que dispara enormes dardos com dano perfurante.", image: "https://static.wikia.nocookie.net/9kings/images/d/d5/Ballista.png/revision/latest?cb=20250528205746" },
+                    { name: "Caçador", type: "tropa", description: "Constrói armadilhas que infligem dano e se acumulam se não ativadas.", image: "https://static.wikia.nocookie.net/9kings/images/b/b8/Trapper.png/revision/latest?cb=20250528205729" },
+                    { name: "Caldeirão", type: "edificio", description: "Terrenos adjacentes causam dano de veneno. +1 carga de veneno por nível.", image: "https://static.wikia.nocookie.net/9kings/images/3/37/Cauldron.png/revision/latest?cb=20250528205848" },
+                    { name: "Muralha", type: "edificio", description: "Constrói muralhas defensivas no seu reino.", image: "https://static.wikia.nocookie.net/9kings/images/a/ae/Wallmaker.png/revision/latest?cb=20250528205713" },
+                    { name: "Pedreira", type: "edificio", description: "Adiciona +2% de dano a todas as torres e base a cada ano.", image: "https://static.wikia.nocookie.net/9kings/images/2/28/Quarry.png/revision/latest?cb=20250528205817" },
+                    { name: "Terraplanagem", type: "encantamento", description: "Desbloqueia os terrenos adjacentes do alvo. Até 3 cópias da carta alvo voltam à sua mão.", image: "https://static.wikia.nocookie.net/9kings/images/a/a7/Earthworks.png/revision/latest?cb=20250528205804" },
+                    { name: "Torre-Chamas", type: "torre", description: "Torre móvel que vai ao campo de batalha para queimar inimigos.", image: "https://static.wikia.nocookie.net/9kings/images/d/d0/Flametower.png/revision/latest?cb=20250528205604" },
+                    { name: "Trabuco", type: "torre", description: "Torre de múltiplos alvos. Dispara +1 projétil por construção no seu reino.", image: "https://static.wikia.nocookie.net/9kings/images/c/cf/Trebuchet.png/revision/latest?cb=20250528205833" }
+                ]
+            },
+            {
+                id: 7,
+                name: "Rei do Progresso",
+                color: "var(--king-progress)",
+                icon: "⚙️",
+                cards: [
+                    { name: "Nave Mãe", type: "base", description: "Voa até os inimigos e ataca como unidade. Pode ser controlada no campo de batalha.", image: "https://static.wikia.nocookie.net/9kings/images/e/e9/Mothership.png/revision/latest?cb=20250528211154" },
+                    { name: "Executor", type: "tropa", description: "Tropa à distância. Sempre ataca o inimigo com a menor vida.", image: "https://static.wikia.nocookie.net/9kings/images/9/93/Executioner.png/revision/latest?cb=20250528211137" },
+                    { name: "Defensor", type: "tropa", description: "Unidade de tanque que não ataca, mas reflete todo o dano recebido.", image: "https://static.wikia.nocookie.net/9kings/images/0/0d/Defender.png/revision/latest?cb=20250528211118" },
+                    { name: "Rato Cobaia", type: "tropa", description: "Tropa fraca. Recebe +1 nível sempre que um terreno adjacente sobe de nível, sem nível máximo.", image: "https://static.wikia.nocookie.net/9kings/images/d/df/Lab_Rat.png/revision/latest?cb=20250528211106" },
+                    { name: "Concabulador", type: "edificio", description: "No nível 3, este edifício sobe 1 nível de todos os seus terrenos.", image: "https://static.wikia.nocookie.net/9kings/images/9/96/Concabulator.png/revision/latest?cb=20250528211053" },
+                    { name: "Reforço", type: "encantamento", description: "Unidades ganham +1% de dano sempre que qualquer terreno sobe de nível.", image: "https://static.wikia.nocookie.net/9kings/images/2/26/Reinforce.png/revision/latest?cb=20250528211032" },
+                    { name: "Precisão", type: "encantamento", description: "O primeiro ataque das unidades é sempre crítico.", image: "https://static.wikia.nocookie.net/9kings/images/e/ee/Precision.png/revision/latest?cb=20250528211016" },
+                    { name: "Conversor", type: "torre", description: "Transforma inimigos em ratos que lutam por você e herdam os atributos do Conversor.", image: "https://static.wikia.nocookie.net/9kings/images/3/35/Converter.png/revision/latest?cb=20250528211001" },
+                    { name: "Reforma", type: "tome", description: "Destrói 1 terreno e sobe o nível de 2 terrenos aleatórios. Cada uso dá +1 level up.", image: "https://static.wikia.nocookie.net/9kings/images/b/bb/Overhaul.png/revision/latest?cb=20250528210933" }
+                ]
+            },
+            {
+                id: 8,
+                name: "Cartas Especiais",
+                color: "var(--special)",
+                icon: "🌈",
+                cards: [
+                    { name: "Destruição", type: "tome", description: "Destrói o terreno alvo para sempre. Aciona um evento do Conselho Real.", image: "https://static.wikia.nocookie.net/9kings/images/e/e1/Razing.png/revision/latest?cb=20250528020146" },
+                    { name: "Santuário", type: "edificio", description: "Gasta 9 de ouro por ano para subir de nível um terreno aleatório. Custa 3 de ouro a menos por nível.", image: "https://static.wikia.nocookie.net/9kings/images/e/e8/Shrine.png/revision/latest?cb=20250601174800" },
+                    { name: "Bode expiatório", type: "tropa", description: "Unidade passiva de retaguarda. Se morto em batalha, gera 3 de ouro por nível.", image: "https://static.wikia.nocookie.net/9kings/images/0/0b/Scapegoat.png/revision/latest?cb=20250527000436" },
+                    { name: "Unificar", type: "tome", description: "Sacrifica todas as tropas adjacentes ao alvo. O terreno alvo ganha o número de unidades sacrificadas.", image: "https://static.wikia.nocookie.net/9kings/images/c/cb/Unify.png/revision/latest?cb=20250528000153" }
+                ]
+            }
+        ];
+
+        // --- [INÍCIO] SCRIPT JAVASCRIPT TOTALMENTE CORRIGIDO --- //
+
+        // Estado da aplicação
+        let state = {
+            selectedKing: null,
+            grid: Array(25).fill(null), // 5x5 grid
+            basePlaced: false,
+            activeFilter: 'all',
+            draggingCard: null
+        };
+
+        // Elementos DOM
+        const cardTooltip = document.getElementById('card-tooltip');
+        const tooltipKingColor = document.getElementById('tooltip-king-color');
+        const tooltipTitle = document.getElementById('tooltip-title');
+        const tooltipImage = document.getElementById('tooltip-image');
+        const tooltipType = document.getElementById('tooltip-type');
+        const tooltipDescription = document.getElementById('tooltip-description');
+
+        // Inicialização da aplicação
+        function init() {
+            renderKingOptions();
+            createGrid();
+            setupEventListeners();
+            selectFirstKing();
+            setupFilters();
+            updateStats();
+            setupTooltip();
+        }
+
+        // Configurar tooltip com posicionamento inteligente
+        function setupTooltip() {
+            document.addEventListener('mousemove', (e) => {
+                const offsetX = 20;
+                const offsetY = 20;
+
+                let newLeft = e.clientX + offsetX;
+                let newTop = e.clientY + offsetY;
+
+                const tooltipWidth = cardTooltip.offsetWidth;
+                const tooltipHeight = cardTooltip.offsetHeight;
+
+                if (newLeft + tooltipWidth > window.innerWidth) {
+                    newLeft = e.clientX - tooltipWidth - offsetX;
+                }
+
+                if (newTop + tooltipHeight > window.innerHeight) {
+                    newTop = e.clientY - tooltipHeight - offsetY;
+                }
+                
+                if (newTop < 0) {
+                    newTop = 5;
+                }
+                if (newLeft < 0) {
+                    newLeft = 5;
+                }
+
+                cardTooltip.style.left = newLeft + 'px';
+                cardTooltip.style.top = newTop + 'px';
+            });
+        }
+
+        // Renderiza as opções de rei
+        function renderKingOptions() {
+            const kingOptionsContainer = document.querySelector('.king-options');
+            kingOptionsContainer.innerHTML = '';
+            
+            kingsData.forEach(king => {
+                const kingElement = document.createElement('div');
+                kingElement.className = `king-option ${king.id === 8 ? 'special-king' : ''}`;
+                kingElement.style.backgroundColor = king.id === 8 ? '' : king.color;
+                kingElement.innerHTML = `
+                    <div class="king-icon">${king.icon}</div>
+                    <span>${king.name.split(' ').slice(-1)[0]}</span>
+                `;
+                
+                kingElement.addEventListener('click', () => selectKing(king.id));
+                kingOptionsContainer.appendChild(kingElement);
+            });
+        }
+
+        // Seleciona um rei e redefine estilos corretamente
+        function selectKing(kingId) {
+            state.selectedKing = kingsData.find(king => king.id === kingId);
+            
+            document.querySelectorAll('.king-option').forEach((option, index) => {
+                option.classList.toggle('active', index + 1 === kingId);
+            });
+            
+            const kingNameEl = document.getElementById('current-king-name');
+            const kingColorEl = document.getElementById('current-king-color');
+            
+            kingNameEl.textContent = state.selectedKing.name;
+
+            if (state.selectedKing.id === 8) {
+                kingColorEl.style.background = 'var(--special)';
+                kingColorEl.style.animation = 'gradientBG 10s ease infinite';
+            } else {
+                kingColorEl.style.animation = '';
+                kingColorEl.style.background = state.selectedKing.color;
+            }
+            
+            renderCards();
+            renderAllCards();
+        }
+
+        // Seleciona o primeiro rei por padrão
+        function selectFirstKing() {
+            if (kingsData.length > 0) {
+                selectKing(1);
+            }
+        }
+
+        // Configurar filtros
+        function setupFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    state.activeFilter = button.dataset.type;
+                    renderCards();
+                    renderAllCards();
+                });
+            });
+        }
+
+        // Renderiza as cartas do rei selecionado
+        function renderCards() {
+            const cardList = document.getElementById('king-cards');
+            cardList.innerHTML = '';
+            
+            if (!state.selectedKing) return;
+            
+            state.selectedKing.cards.forEach(card => {
+                if (state.activeFilter !== 'all' && state.activeFilter !== card.type) return;
+                const cardElement = createCardElement(card, state.selectedKing);
+                cardList.appendChild(cardElement);
+            });
+        }
+
+        // Renderiza todas as cartas de outros reis
+        function renderAllCards() {
+            const allCardsList = document.getElementById('all-cards');
+            allCardsList.innerHTML = '';
+            
+            kingsData.forEach(king => {
+                if (state.selectedKing && king.id === state.selectedKing.id) return;
+                
+                king.cards.forEach(card => {
+                    if (state.activeFilter !== 'all' && state.activeFilter !== card.type) return;
+                    const cardElement = createCardElement(card, king);
+                    allCardsList.appendChild(cardElement);
+                });
+            });
+        }
+
+        // Cria um elemento de carta com tooltip corrigido
+        function createCardElement(card, king) {
+            const cardElement = document.createElement('div');
+            cardElement.className = `card ${card.type === 'tome' ? 'tome' : ''}`;
+            cardElement.draggable = card.type !== 'tome';
+            
+            cardElement.innerHTML = `
+                <div class="card-image" style="background-image: url('${card.image}')"></div>
+                <div class="card-overlay">
+                    <div class="card-name">${card.name}</div>
+                    <div class="card-type">${getTypeName(card.type)}</div>
+                </div>
+            `;
+            
+            cardElement.addEventListener('mouseenter', () => {
+                if (king.id === 8) {
+                    tooltipKingColor.style.background = 'var(--special)';
+                    tooltipKingColor.style.animation = 'gradientBG 10s ease infinite';
+                } else {
+                    tooltipKingColor.style.animation = '';
+                    tooltipKingColor.style.background = king.color;
+                }
+                tooltipTitle.textContent = card.name;
+                tooltipImage.style.backgroundImage = `url('${card.image}')`;
+                tooltipType.textContent = getTypeName(card.type);
+                tooltipDescription.textContent = card.description;
+                cardTooltip.style.opacity = 1;
+            });
+            
+            cardElement.addEventListener('mouseleave', () => {
+                cardTooltip.style.opacity = 0;
+            });
+            
+            cardElement.addEventListener('dragstart', (e) => {
+                if (card.type !== 'tome') {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({
+                        name: card.name,
+                        type: card.type,
+                        kingColor: king.color,
+                        image: card.image,
+                        description: card.description,
+                        kingId: king.id
+                    }));
+                }
+            });
+            
+            return cardElement;
+        }
+
+        // Retorna o nome do tipo para exibição
+        function getTypeName(type) {
+            const typeNames = { 'base': 'Base', 'tropa': 'Tropa', 'encantamento': 'Encantamento', 'torre': 'Torre', 'edificio': 'Edifício', 'tome': 'Tomo' };
+            return typeNames[type] || type;
+        }
+
+        // Cria o grid 5x5
+        function createGrid() {
+            const gridContainer = document.querySelector('.grid-container');
+            gridContainer.innerHTML = '';
+            const basePositions = [6, 7, 8, 11, 12, 13, 16, 17, 18];
+            
+            for (let i = 0; i < 25; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.dataset.index = i;
+                
+                if (basePositions.includes(i)) {
+                    cell.classList.add('base-allowed');
+                }
+                
+                cell.addEventListener('dragover', (e) => { e.preventDefault(); cell.classList.add('highlight'); });
+                cell.addEventListener('dragleave', () => { cell.classList.remove('highlight'); });
+                cell.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    cell.classList.remove('highlight');
+                    const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    handleCardDrop(cell, data);
+                });
+                gridContainer.appendChild(cell);
+            }
+        }
+
+        // Manipula o evento de soltar uma carta
+        function handleCardDrop(cell, cardData) {
+            const index = parseInt(cell.dataset.index);
+            const basePositions = [6, 7, 8, 11, 12, 13, 16, 17, 18];
+            
+            if (cardData.type === 'base') {
+                if (!basePositions.includes(index)) {
+                    alert('A base só pode ser colocada nas posições centrais!');
+                    return;
+                }
+                if (state.basePlaced) {
+                    alert('Só pode haver uma base no tabuleiro!');
+                    return;
+                }
+                state.basePlaced = true;
+            }
+            
+            if (cardData.type === 'encantamento') {
+                if (state.grid[index] && state.grid[index].type === 'tropa') {
+                    if (!state.grid[index].enchantments) {
+                        state.grid[index].enchantments = [];
+                    }
+                    const exists = state.grid[index].enchantments.some(e => e.name === cardData.name);
+                    if (!exists) {
+                        state.grid[index].enchantments.push(cardData);
+                    }
+                    updateGrid();
+                    updateStats();
+                    return;
+                } else {
+                    alert('Encantamentos só podem ser aplicados em tropas!');
+                    return;
+                }
+            }
+            
+            state.grid[index] = cardData;
+            updateGrid();
+            updateStats();
+        }
+
+        // Atualiza a exibição do grid com todas as lógicas corrigidas
+        function updateGrid() {
+            const cells = document.querySelectorAll('.grid-cell');
+            
+            cells.forEach((cell, index) => {
+                const cardData = state.grid[index];
+                cell.innerHTML = '';
+                
+                if (cardData) {
+                    const cardElement = document.createElement('div');
+                    cardElement.className = 'placed-card';
+
+                    // Lógica corrigida para exibir imagem e fundo corretamente
+                    if (cardData.kingId === 8) {
+                        cardElement.style.background = `url('${cardData.image}'), var(--special)`;
+                        cardElement.style.backgroundSize = "contain, 400% 400%";
+                        cardElement.style.backgroundRepeat = "no-repeat, no-repeat";
+                        cardElement.style.backgroundPosition = "center, 0% 50%";
+                        cardElement.style.animation = 'gradientBG 10s ease infinite';
+                    } else {
+                        cardElement.style.backgroundImage = `url('${cardData.image}')`;
+                        cardElement.style.backgroundColor = cardData.kingColor;
+                        cardElement.style.animation = '';
+                    }
+                    
+                    const cardOverlay = document.createElement('div');
+                    cardOverlay.className = 'card-overlay';
+                    cardOverlay.innerHTML = `<div class="card-name">${cardData.name}</div><div class="card-type">${getTypeName(cardData.type)}</div>`;
+                    cardElement.appendChild(cardOverlay);
+                    
+                    cardElement.addEventListener('mouseenter', () => {
+                        if (cardData.kingId === 8) {
+                            tooltipKingColor.style.background = 'var(--special)';
+                            tooltipKingColor.style.animation = 'gradientBG 10s ease infinite';
+                        } else {
+                            tooltipKingColor.style.animation = '';
+                            tooltipKingColor.style.background = cardData.kingColor;
+                        }
+                        tooltipTitle.textContent = cardData.name;
+                        tooltipImage.style.backgroundImage = `url('${cardData.image}')`;
+                        tooltipType.textContent = getTypeName(cardData.type);
+                        tooltipDescription.textContent = cardData.description;
+                        cardTooltip.style.opacity = 1;
+                    });
+                    
+                    cardElement.addEventListener('mouseleave', () => { cardTooltip.style.opacity = 0; });
+                    
+                    cardElement.draggable = true;
+                    cardElement.addEventListener('dragstart', (e) => {
+                        if (cardData.type === 'base') state.basePlaced = false;
+                        
+                        const dragData = state.grid[index];
+                        e.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+                        
+                        state.grid[index] = null;
+                        setTimeout(() => updateGrid(), 0);
+                        updateStats();
+                    });
+                    
+                    const kingIndicator = document.createElement('div');
+                    kingIndicator.className = 'king-indicator';
+                    if (cardData.kingId === 8) {
+                        kingIndicator.style.background = 'var(--special)';
+                        kingIndicator.style.animation = 'gradientBG 10s ease infinite';
+                    } else {
+                        kingIndicator.style.animation = '';
+                        kingIndicator.style.background = cardData.kingColor;
+                    }
+                    cardElement.appendChild(kingIndicator);
+                    
+                    if (cardData.type === 'tropa' && cardData.enchantments && cardData.enchantments.length > 0) {
+                        const enchantmentsContainer = document.createElement('div');
+                        enchantmentsContainer.className = 'enchantments-container';
+                        
+                        cardData.enchantments.forEach((enchantment, idx) => {
+                            const enchantmentBadge = document.createElement('div');
+                            enchantmentBadge.className = 'enchantment-badge';
+                            enchantmentBadge.style.backgroundImage = `url('${enchantment.image}')`;
+                            
+                            if (enchantment.kingId === 8) {
+                                enchantmentBadge.style.backgroundColor = 'transparent'; // Fundo transparente pra ver o gradiente
+                                enchantmentBadge.style.background = `url('${enchantment.image}'), var(--special)`;
+                                enchantmentBadge.style.backgroundSize = "contain, cover";
+                            } else {
+                                enchantmentBadge.style.backgroundColor = enchantment.kingColor;
+                            }
+                            
+                            enchantmentBadge.addEventListener('mouseenter', (e) => {
+                                e.stopPropagation();
+                                if (enchantment.kingId === 8) {
+                                    tooltipKingColor.style.background = 'var(--special)';
+                                    tooltipKingColor.style.animation = 'gradientBG 10s ease infinite';
+                                } else {
+                                    tooltipKingColor.style.animation = '';
+                                    tooltipKingColor.style.background = enchantment.kingColor;
+                                }
+                                tooltipTitle.textContent = enchantment.name;
+                                tooltipImage.style.backgroundImage = `url('${enchantment.image}')`;
+                                tooltipType.textContent = 'Encantamento';
+                                tooltipDescription.textContent = enchantment.description;
+                                cardTooltip.style.opacity = 1;
+                            });
+                            
+                            enchantmentBadge.addEventListener('mouseleave', () => { cardTooltip.style.opacity = 0; });
+                            
+                            enchantmentBadge.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                cardData.enchantments.splice(idx, 1);
+                                updateGrid();
+                                updateStats();
+                            });
+                            
+                            enchantmentsContainer.appendChild(enchantmentBadge);
+                        });
+                        
+                        cardElement.appendChild(enchantmentsContainer);
+                    }
+                    
+                    cell.appendChild(cardElement);
+                }
+            });
+        }
+
+        // Atualiza as estatísticas
+        function updateStats() {
+            let troops = 0, towers = 0, buildings = 0, enchantments = 0;
+            state.grid.forEach(cell => {
+                if (cell) {
+                    if (cell.type === 'tropa') troops++;
+                    if (cell.type === 'torre') towers++;
+                    if (cell.type === 'edificio') buildings++;
+                    if (cell.enchantments) enchantments += cell.enchantments.length;
+                }
+            });
+            document.getElementById('troops-count').textContent = troops;
+            document.getElementById('towers-count').textContent = towers;
+            document.getElementById('buildings-count').textContent = buildings;
+            document.getElementById('enchantments-count').textContent = enchantments;
+        }
+
+        // Configura os event listeners
+        function setupEventListeners() {
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                state.grid = Array(25).fill(null);
+                state.basePlaced = false;
+                updateGrid();
+                updateStats();
+            });
+            
+            document.getElementById('clear-btn').addEventListener('click', () => {
+                state.grid = Array(25).fill(null);
+                state.basePlaced = false;
+                selectKing(1); // Reseta para o primeiro rei
+                updateGrid();
+                updateStats();
+            });
+            
+            document.getElementById('save-btn').addEventListener('click', () => {
+                const buildName = prompt('Dê um nome para sua build:');
+                if (buildName) {
+                    const buildData = {
+                        king: state.selectedKing ? state.selectedKing.id : null,
+                        grid: state.grid
+                    };
+                    localStorage.setItem(`9kings_build_${buildName}`, JSON.stringify(buildData));
+                    alert(`Build "${buildName}" salva com sucesso!`);
+                }
+            });
+        }
+
+        // Inicializar quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // --- [FIM] SCRIPT JAVASCRIPT TOTALMENTE CORRIGIDO --- //
+    </script>
+</body>
+</html>
